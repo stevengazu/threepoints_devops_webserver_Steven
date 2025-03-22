@@ -1,0 +1,30 @@
+name: Continuous Integration - Steven_Garro
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Pruebas de SAST
+      - name: Pruebas de SAST
+        run: echo "Ejecución de pruebas de SAST"
+
+      # Paso 2: Crear archivo de credenciales
+      - name: Crear archivo de credenciales
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          echo "[credentials]" > credentials.ini
+          echo "user=${USERNAME}" >> credentials.ini
+          echo "password=${PASSWORD}" >> credentials.ini
+          echo "Archivo credentials.ini creado con éxito."
+
+      # Paso 3: Construir la imagen Docker
+      - name: Build docker image
+        run: docker build -t devops_ws . --tag devops_ws_:$(date +%s)
