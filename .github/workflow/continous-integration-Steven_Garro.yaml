@@ -27,4 +27,4 @@ jobs:
 
       # Paso 3: Construir la imagen Docker
       - name: Build docker image
-        run: docker build -t devops_ws . --tag devops_ws_:$(date +%s)
+        run: docker build -t devops-ws . --tag devops-ws-:$(date +%s)
