@@ -1,0 +1,40 @@
+name: Pull Request Quality Gate
+
+on:
+  pull_request:
+    branches:
+      - '**' # Se ejecuta en todas las ramas de Pull Request
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest # Usa una máquina virtual Ubuntu
+    steps:
+      # Paso 1: Preparar el entorno
+      - name: Clonar el repositorio
+        uses: actions/checkout@v3
+
+      # Paso 2: Simular el análisis de código
+      - name: Análisis SAST simulado
+        run: echo "Realizando análisis de SAST..."
+
+      # Paso 3: Validar el archivo "allow_pull_request.txt"
+      - name: Comprobar archivo 'allow_pull_request.txt'
+        id: check_file
+        run: |
+          if [ -f allow_pull_request.txt ]; then
+            echo "allow_pull=true" >> $GITHUB_ENV
+          else
+            echo "allow_pull=false" >> $GITHUB_ENV
+          fi
+
+      # Paso 4: Decidir sobre el Pull Request
+      - name: Decidir si permitir el Pull Request
+        run: |
+          if [ "$ALLOW_PULL" = "true" ]; then
+            echo "Permitiendo Pull Request"
+          else
+            echo "Build fallida. Impidiendo Pull Request"
+            exit 1
+          fi
+        env:
+          ALLOW_PULL: ${{ env.allow_pull }}
